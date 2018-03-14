@@ -74,8 +74,8 @@
   function getHash()
   {
     var hash = window.location.hash.substring(1);
-    var url = "./getFeedData?url=" + hash;
-    loadRSS(url);
+    var hashURL = "./getFeedData?url=" + hash;
+    loadRSS(hashURL);
   }
 
   function loadRSS(url){
