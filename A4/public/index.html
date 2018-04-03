@@ -23,6 +23,8 @@
   }
   button{
     border:none;
+    width: 250px;
+    background: white;
   }
   #theImageList button h1,
   #theImageList button h2,
@@ -47,10 +49,20 @@
       float: left;
       margin-right: 5px;
   }
+ #theImageList button img{
+      height: 100px;
+      width: 100px;
+      padding: 0px;
+      margin-right: 5px;
+      margin-left: -6px;
+      margin-top: -1px;
+      float: left;
+  }
     #editButton{
       float: right;
       margin-top: -50px;
       margin-right: 5px;
+      width: 35.72px;
     }
     #allImagesWrapper{
       float:left;
@@ -163,7 +175,7 @@
           var markup = "";
           for(var i = 0; i < allFeeds.length; i++){
             markup += "<div class='item'>";
-              markup += "<button onclick='imgSelected(" + i + ")'><h1>" + allFeeds[i].name+ "</h1><h2>" + allFeeds[i].url + "<h2></button>";
+              markup += "<button onclick='imgSelected(" + i + ")'><img src='" + allFeeds[i].url + "'><h1>" + allFeeds[i].name+ "</h1><h2>" + allFeeds[i].url + "<h2></button>";
               markup += '<a href="javascript:renameClicked(' + i + ')"> Rename </a>';
               markup += '<a href="javascript:deleteClicked(' + i + ')"> Delete </a>';
               markup += "</div>";
