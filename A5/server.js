@@ -26,7 +26,7 @@ app.get("/getImgData", function (req, res) {
 
 
 app.get("/getAllImgs", function (req, res) {
-  db.collection('img').find().toArray(function(err, items) {
+  db.collection('img').find().sort({id:-1}).toArray(function(err, items) {
     console.log(err, items);
     if(!items) items = [];
     res.send(items);
@@ -48,6 +48,25 @@ app.get("/renameImg", function (req, res) {
   console.log(newName, id);
   db.collection("img").findOne({id:id}, function(err, result){
       result.name = newName;
+      db.collection("img").save(result, function(err){
+        res.end("1");
+      });
+  });
+});
+
+
+app.get("/updateImg", function (req, res) {
+  var data = req.query;
+  var keys = Object.keys(data);
+  var id = data.id;
+ 
+  db.collection("img").findOne({id:id}, function(err, result){
+      console.log(id, err, result);
+      for(var i = 0; i < keys.length; i++){
+        var key = keys[i];
+        result[key] = data[key];
+      }
+
       db.collection("img").save(result, function(err){
         res.end("1");
       });
