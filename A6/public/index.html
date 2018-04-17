@@ -1,10 +1,52 @@
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scale=0, max-width=1.0">
   <script src='asyncReq.js'></script>
   <script src='jquery-3.3.1.min.js'></script>
   <script src='ac.js'></script>
   <link rel="stylesheet" type="text/css" href="ac.css">
   <style>
+.hiddeninall{
+    display: none;
+}
+
+body{
+  margin: 0px;
+  }
+
+@media (min-width: 500px){ /* big */
+  #theImageList, #allImagesWrapper{
+    width: 250px;
+    max-height: 100%;
+    overflow: scroll;
+  }
+  .hiddeninSmall{
+    display: block;
+  }
+  .hiddeninBig{
+    display: none;
+  }
+  #theDetails{
+    width: calc(100% - 500px);
+
+  }
+}
+@media (max-width: 500px){ /* small */
+  #theImageList, #allImagesWrapper{
+    width: 100%;
+  }
+  .hiddeninSmall{
+    display: none;
+  }
+  .hiddeninBig{
+    display: block;
+    margin: 10px;
+  }
+  #theDetails{
+    width: 100%;
+  }
+}
+
 #theInspector input[type=range]{
     width: 65%;
     display: inline-block;
@@ -81,7 +123,7 @@ body{
       width: 250px;
       min-height: 100%;
       background: gray;
-    } 
+    }
     #theInspector{
       float:right;
       width: 250px;
@@ -90,13 +132,13 @@ body{
       top: 0px;
     position: absolute;
     right: 0px;
-    } 
+    }
     #rssBox{
       float:left;
       width: 250px;
       min-height: 100%;
       background: lightgray;
-    } 
+    }
     #theDetails{
       width: calc(100% - 500px);
       min-height: 100%;
@@ -109,6 +151,18 @@ body{
     }
   </style>
   <script>
+  function goBackToMain()
+  {
+    $(theImageList).removeClass("hiddeninSmall")
+  }
+
+  function goBackToList()
+{
+  $("#theDetails").addClass("hiddeninall");
+  $("#allImagesWrapper").removeClass("hiddeninSmall");
+  setTimeout(function(){$("#theList button").removeClass("active")}, 1000);
+}
+
   function renameClicked(n){
     var currName = currRSSFeedList[n].name;
     var id = currRSSFeedList[n].id;
@@ -159,6 +213,7 @@ body{
     var feedURL = currRSSFeedList[n].url;
     var url = "./getFeedData?url=" + feedURL;
     loadRSS(url);
+    $("#allImagesWrapper").addClass("hiddeninSmall");
     $("#theImageList .item").removeClass("active");
     $("#theImageList .item:nth-of-type(" + (n+1) + ")").addClass("active");
   }
@@ -187,7 +242,7 @@ var currSelection;
     setFilters(n)
     // Instead of the above resetFilters(), init the filters stored by user and apply it!
     document.getElementById("theDetails").style.backgroundImage = "url(" + imgURL + ")";
-   
+
     $("#theImageList .item").removeClass("active");
     $("#theImageList .item:nth-of-type(" + (n+1) + ")").addClass("active");
   }
@@ -214,7 +269,7 @@ var currSelection;
           }
           $("#theImageList").html(markup);
           imgSelected(0);
-        }     
+        }
         ac.hide();
     });
   }
@@ -238,6 +293,7 @@ var currSelection;
   }
   function itemSelected(n)
   {
+    $("#rssBox").addClass("hiddeninSmall");
     $("#theList button").removeClass("active");
     $("#theList button:nth-of-type(" + (n+1) + ")").addClass("active");
     var data = currRSSData[n];
@@ -250,8 +306,10 @@ var currSelection;
     markup += "<img src='" + thumbnail + "'>";
     markup += "<a target='_blank' href='" + link + "'><h1>" + name + "</h1></a>";
 
+    markup = "<button onclick='goBackToList()' class='hiddeninBig'> Back </button>" + markup;
 
     $("#theDetails").html(markup);
+    $("#theDetails").removeClass("hiddeninall");
     //document.getElementById("theDetails").innerHTML = markup;
   }
 
@@ -268,7 +326,7 @@ var currSelection;
       document.getElementById("opacity").value = obj.opacity || "100";
       document.getElementById("saturate").value = obj.saturate || "100";
       document.getElementById("sepia").value = obj.sepia || "0";
-      applyFilter();  
+      applyFilter();
   }
 
   function resetFilters()
@@ -309,7 +367,7 @@ var currSelection;
       filter += " sepia(" + sepia + ") ";
 
       document.getElementById("theDetails").style.filter = filter;
-    
+
       currRSSFeedList[n].blur = parseInt(blur);
       currRSSFeedList[n].brightness = parseInt(brightness);
       currRSSFeedList[n].contrast = parseInt(contrast);
@@ -319,8 +377,8 @@ var currSelection;
       currRSSFeedList[n].opacity = parseInt(opacity);
       currRSSFeedList[n].saturate = parseInt(saturate);
       currRSSFeedList[n].sepia = parseInt(sepia);
-      
-      var url = "./updateImg?id=" + currRSSFeedList[n].id 
+
+      var url = "./updateImg?id=" + currRSSFeedList[n].id
         + "&blur=" + parseInt(blur)
         + "&brightness=" + parseInt(brightness)
         + "&contrast=" + parseInt(contrast)
@@ -344,6 +402,7 @@ var currSelection;
   <div id='theImageList'></div>
 </div>
 <div id='theDetails'></div>
+  <button onclick='goBackToMain()' class='hiddeninBig'> Back </button>
 <div id='theInspector'>
   <br>
   <label for='blur'> Blur </label>
