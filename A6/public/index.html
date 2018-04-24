@@ -14,38 +14,49 @@ body{
   margin: 0px;
   }
 
-@media (min-width: 500px){ /* big */
-  #theImageList, #allImagesWrapper{
-    width: 250px;
-    max-height: 100%;
-    overflow: scroll;
+  .halfInSmall {
+    width: 50%!important;
+    margin-left: 0%!important;
   }
-  .hiddeninSmall{
-    display: block;
-  }
-  .hiddeninBig{
-    display: none;
-  }
-  #theDetails{
-    width: calc(100% - 500px);
 
+  @media (max-width: 500px){ /* small */
+    #allImagesWrapper{
+      width: 100%!important;
+    }
+    #theInspector{
+      width: 50%!important;
+    }
+    .hiddeninSmall{
+      display: none;
+    }
+    .hiddeninBig{
+      display: block;
+      margin: 10px;
+    }
+    #theInspector{
+      width: 100%;
+    }
+    .bigInSmall {
+      width: 100%!important;
+      margin-left: 0%!important;
+    }
   }
-}
-@media (max-width: 500px){ /* small */
-  #theImageList, #allImagesWrapper{
-    width: 100%;
+  @media (min-width: 500px){ /* big */
+    #allImagesWrapper, #theDetails{
+      width: 250px;
+      max-height: 100%;
+      overflow: scroll;
+    }
+    .hiddeninSmall{
+      display: block;
+    }
+    .hiddeninBig{
+      display: none;
+    }
+    #theInspector{
+      width: calc(100% - 500px);
+    }
   }
-  .hiddeninSmall{
-    display: none;
-  }
-  .hiddeninBig{
-    display: block;
-    margin: 10px;
-  }
-  #theDetails{
-    width: 100%;
-  }
-}
 
 #theInspector input[type=range]{
     width: 65%;
@@ -130,8 +141,8 @@ body{
       min-height: 100%;
       background: white;
       top: 0px;
-    position: absolute;
-    right: 0px;
+      position: absolute;
+      right: 0px;
     }
     #rssBox{
       float:left;
@@ -149,19 +160,46 @@ body{
       background-size: contain;
           margin-left: 250px;
     }
+    #backButton{
+
+    }
+    #removeButton{
+      width: 380px;
+    }
+    #inspectorButton{
+      width: 380px;
+    }
   </style>
   <script>
   function goBackToMain()
-  {
-    $(theImageList).removeClass("hiddeninSmall")
-  }
-
-  function goBackToList()
-{
-  $("#theDetails").addClass("hiddeninall");
-  $("#allImagesWrapper").removeClass("hiddeninSmall");
-  setTimeout(function(){$("#theList button").removeClass("active")}, 1000);
-}
+    {
+      $("#allImagesWrapper").removeClass("hiddeninSmall");
+      $("#theDetails").removeClass("bigInSmall");
+      $("#theDetails").addClass("hiddeninSmall");
+      $("#theDetails").removeClass("halfInSmall");
+      $("#theInspector").addClass("hiddeninSmall");
+     // setTimeout(function(){$("#theFeedList .item").removeClass("active")}, 1000);
+    }
+    function goToInspector()
+    {
+      $("#theInspector").removeClass("hiddeninSmall");
+      $("#theDetails").addClass("halfInSmall");
+      $("#theDetails").removeClass("bigInSmall");
+     // setTimeout(function(){$("#theFeedList .item").removeClass("active")}, 1000);
+    }
+    function removeInspector()
+    {
+      $("#theInspector").addClass("hiddeninSmall");
+      $("#theDetails").removeClass("halfInSmall");
+      $("#theDetails").addClass("bigInSmall");
+     // setTimeout(function(){$("#theFeedList .item").removeClass("active")}, 1000);
+    }
+    function goBackToList()
+    {
+      $("#theInspector").addClass("hiddeninall");
+      $("#theDetails").removeClass("hiddeninSmall");
+      // setTimeout(function(){$("#theList button").removeClass("active")}, 1000);
+    }
 
   function renameClicked(n){
     var currName = currRSSFeedList[n].name;
@@ -242,7 +280,9 @@ var currSelection;
     setFilters(n)
     // Instead of the above resetFilters(), init the filters stored by user and apply it!
     document.getElementById("theDetails").style.backgroundImage = "url(" + imgURL + ")";
-
+    $("#theDetails").removeClass("hiddeninSmall");
+    $("#allImagesWrapper").addClass("hiddeninSmall");
+    $("#theDetails").addClass("bigInSmall");
     $("#theImageList .item").removeClass("active");
     $("#theImageList .item:nth-of-type(" + (n+1) + ")").addClass("active");
   }
@@ -293,7 +333,6 @@ var currSelection;
   }
   function itemSelected(n)
   {
-    $("#rssBox").addClass("hiddeninSmall");
     $("#theList button").removeClass("active");
     $("#theList button:nth-of-type(" + (n+1) + ")").addClass("active");
     var data = currRSSData[n];
@@ -306,10 +345,7 @@ var currSelection;
     markup += "<img src='" + thumbnail + "'>";
     markup += "<a target='_blank' href='" + link + "'><h1>" + name + "</h1></a>";
 
-    markup = "<button onclick='goBackToList()' class='hiddeninBig'> Back </button>" + markup;
-
     $("#theDetails").html(markup);
-    $("#theDetails").removeClass("hiddeninall");
     //document.getElementById("theDetails").innerHTML = markup;
   }
 
@@ -402,7 +438,9 @@ var currSelection;
   <div id='theImageList'></div>
 </div>
 <div id='theDetails'></div>
-  <button onclick='goBackToMain()' class='hiddeninBig'> Back </button>
+  <button id='backButton' onclick='goBackToMain()' class='hiddeninBig'> Back </button>
+  <button id='inspectorButton' onclick='goToInspector()'  class='hiddeninBig'> Inspector </button>
+  <button id='removeButton' onclick='removeInspector()' class='hiddeninBig'>Remove Inspector </button>
 <div id='theInspector'>
   <br>
   <label for='blur'> Blur </label>
