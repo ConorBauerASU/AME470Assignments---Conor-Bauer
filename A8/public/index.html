@@ -171,6 +171,37 @@ body{
     }
   </style>
   <script>
+  var fileUploaded = function() {
+     var file = $('#theFileUploader').get(0);
+     var fileObj = $('#theFileUploader').get(0).files[0]
+     var filename = fileObj.name;
+     var ext = filename.split(".");
+     ext = ext[ext.length-1];
+     console.log(ext);
+     var fd = new FormData();
+     var fileInput = "s3Upload_" + new Date().getTime().toString() + "." + ext;
+     fd.append('fileInput', fileInput);
+     fd.append('input', file.files[0]);
+     fd.append('date', (new Date()).toString());
+      //fd.append('data', data);
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function(e) {
+        if (xhr.readyState != 4) { return; }
+          // callback logic
+      // add image
+    var fileURL = "https://s3-us-west-1.amazonaws.com/ame4702018conorb/" + fileInput;
+        var url = "./addImg?url=" + fileURL;
+        url += "&date=" + new Date().getTime();
+          url += "&name=Untitled";
+        url += "&id=test" + new Date().getTime();
+        loadFile(url, function(resData){
+    start();
+        });
+      };
+      xhr.open("POST", "/uploadFile", true);
+      xhr.send(fd);
+  }
+
   function goBackToMain()
     {
       $("#allImagesWrapper").removeClass("hiddeninSmall");
@@ -264,6 +295,7 @@ body{
     url += "&name=Untitled";
     url += "&id=test" + new Date().getTime();
     loadFile(url, function(resData){
+        // fileUploaded();
         start();
     })
   }
@@ -435,6 +467,8 @@ var currSelection;
 <div id='allImagesWrapper'>
 	<h1> Image Lib</h1>
   <button id='editButton' onclick='addImgSrc()'> Add</button>
+  <br>
+  <input type='file' id='theFileUploader' onchange='fileUploaded()'>
   <div id='theImageList'></div>
 </div>
 <div id='theDetails'></div>
